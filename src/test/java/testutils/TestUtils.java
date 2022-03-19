@@ -16,8 +16,8 @@ public class TestUtils {
 			for (int i = 0; i < a.size(); i++) {
 				for (int j = 0; j < b.size(); j++) {
 					if (a.get(i).getNome().equals(b.get(i).getNome())
-							|| a.get(i).getEmail().equals(b.get(i).getEmail())
-							|| a.get(i).getFone().equals(b.get(i).getFone())) {
+							&& a.get(i).getEmail().equals(b.get(i).getEmail())
+							&& a.get(i).getFone().equals(b.get(i).getFone())) {
 						quantos++;
 					}
 				}
