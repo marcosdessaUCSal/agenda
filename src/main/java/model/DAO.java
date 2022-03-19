@@ -131,7 +131,17 @@ public class DAO {
 		}
 	}
 	
-	
+	public void reset() {
+		String delete = "TRUNCATE TABLE contatos";
+		try {
+			Connection con = conectar();
+			PreparedStatement pst = con.prepareStatement(delete);
+			pst.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
 }
 
 

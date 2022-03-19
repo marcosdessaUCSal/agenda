@@ -1,12 +1,17 @@
 package testutils;
 
-import static org.junit.Assert.fail;
-
+import java.sql.Connection;
 import java.util.ArrayList;
 
+import model.DAO;
 import model.JavaBeans;
 
 public class TestUtils {
+	
+	public void resetTabela() {
+		DAO dao = new DAO();
+		dao.reset();
+	}
 
 	public boolean saoEquivalentes(ArrayList<JavaBeans> a, ArrayList<JavaBeans> b) {
 		int quantos = 0;
@@ -18,16 +23,13 @@ public class TestUtils {
 					if (a.get(i).getNome().equals(b.get(i).getNome())
 							&& a.get(i).getEmail().equals(b.get(i).getEmail())
 							&& a.get(i).getFone().equals(b.get(i).getFone())) {
+						b.set(j, null);
 						quantos++;
+						break;
 					}
 				}
 			}
 		}
-
-		if (a.size() == quantos) {
-			return true;
-		} else {
-			return false;
-		}
+		return a.size() == quantos;
 	}
 }
