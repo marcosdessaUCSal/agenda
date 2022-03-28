@@ -28,8 +28,9 @@ public class DAO {
 		}
 	}
 	
-	/** CRUD CREATE **/
-	public void inserirContato(JavaBeans contato) {
+	/** CRUD CREATE 
+	 * @throws Exception **/
+	public void inserirContato(JavaBeans contato) throws Exception {
 		String create = "INSERT INTO contatos (nome, fone, email) values (?,?,?)";
 		try {
 			// abrir a conexão
@@ -50,7 +51,8 @@ public class DAO {
 			con.close();
 			
 		} catch (Exception e) {
-			System.out.println(e);
+			throw new Exception("Algo errado no registro");
+//			System.out.println(e);
 		}
 	}
 	

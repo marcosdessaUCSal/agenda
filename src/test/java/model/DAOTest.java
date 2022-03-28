@@ -1,13 +1,14 @@
 package model;
 
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +36,19 @@ public class DAOTest {
 	}
 
 	@Test
+	@DisplayName("Inserir um contato com campos nulos")
+	void contatoCamposNulos() {
+		dao = new DAO();
+
+		// a aplicação deveria lançar alguma exceção
+		assertThrows(Exception.class, () -> dao.inserirContato(new JavaBeans(null, null, null, null)),
+				"Deveria ser lançada exceção");
+
+	}
+
+	@Test
 	@DisplayName("Inserção de novos contatos")
-	void novosContatosTeste() {
+	void novosContatosTeste() throws Exception {
 		dao = new DAO();
 		utils = new TestUtils();
 
@@ -68,7 +80,7 @@ public class DAOTest {
 			fail("Número de contatos inconsistente");
 		}
 
-		// verifica se o esperado e o obtido conferem
+		// verifica se o esperado e o obtido conferem (ordem pode ser diferente)
 		if (utils.saoEquivalentes(esperados, atuais)) {
 			fail("A lista de contatos não confere");
 		}
@@ -76,7 +88,7 @@ public class DAOTest {
 
 	@Test
 	@DisplayName("Dados repetidos")
-	void dadosRepetidosTeste() {
+	void dadosRepetidosTeste() throws Exception {
 		dao = new DAO();
 		utils = new TestUtils();
 
@@ -89,14 +101,12 @@ public class DAOTest {
 		atuais = dao.listarContatos();
 
 		// se houver dois registros, há duplicação nos dados
-		if (atuais.size() == 2) {
-			fail("Contato idêntico inserido duas vezes");
-		}
+		assertEquals(1, atuais.size(), "Contato idêntico inserido duas vezes");
 	}
 
 	@Test
 	@DisplayName("Eliminação de contatos")
-	void deletarContatos() {
+	void deletarContatos() throws Exception {
 		dao = new DAO();
 		utils = new TestUtils();
 
@@ -114,14 +124,12 @@ public class DAOTest {
 		atuais = dao.listarContatos();
 
 		// se houver algum elemento no banco, o registro não foi eliminado
-		if (atuais.size() != 0) {
-			fail("O contato não foi eliminado");
-		}
+		assertEquals(0, atuais.size(), "O contato não foi eliminado");
 	}
 
 	@Test
 	@DisplayName("Alteração de um contato")
-	void alterarContato() {
+	void alterarContato() throws Exception {
 		dao = new DAO();
 		utils = new TestUtils();
 
@@ -132,19 +140,17 @@ public class DAOTest {
 		// recuperando o contato (para que o dado tenha informação do id)
 		atuais = dao.listarContatos();
 		String id = atuais.get(0).getIdcon();
-		
+
 		// alterando o contato
 		dao.alterarContato(new JavaBeans(id, "Peter Parker", "987456321", "spider@man.com"));
-		
+
 		// recuperando o contato novamente para depois checar alterações
 		JavaBeans contatoAtual = dao.listarContatos().get(0);
-		
+
 		// verificando
-		if (!contatoAtual.getNome().equals("Peter Parker")
-				|| !contatoAtual.getFone().equals("987456321")
-				|| !contatoAtual.getEmail().equals("spider@man.com")) {
-			fail("O contato não foi alterado corretamente.");
-		}
-		
+		assertAll("Alteração de um contato", () -> assertEquals("Peter Parker", contatoAtual.getNome()),
+				() -> assertEquals("987456321", contatoAtual.getFone()),
+				() -> assertEquals("spider@man.com", contatoAtual.getEmail()));
+
 	}
 }
